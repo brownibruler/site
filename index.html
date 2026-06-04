@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mes Téléchargements</title>
+<title>Téléchargements</title>
 
 <style>
 body{
     background:#000;
     color:#00ff00;
-    font-family: Consolas, monospace;
+    font-family:Consolas,monospace;
     text-align:center;
     margin:0;
 }
@@ -22,7 +22,7 @@ canvas{
 }
 
 h1{
-    margin-top:40px;
+    margin-top:50px;
     text-shadow:0 0 10px #00ff00;
 }
 
@@ -39,14 +39,15 @@ a{
     display:block;
     color:#00ff00;
     text-decoration:none;
-    margin:10px;
-    padding:10px;
+    margin:15px;
+    padding:15px;
     border:1px solid #00ff00;
+    transition:0.3s;
 }
 
 a:hover{
     background:#00ff00;
-    color:black;
+    color:#000;
 }
 </style>
 </head>
@@ -54,15 +55,14 @@ a:hover{
 
 <canvas id="matrix"></canvas>
 
-<h1>MES FICHIERS</h1>
+<h1>MES TÉLÉCHARGEMENTS</h1>
 
 <div class="box">
-    <h2>Téléchargements</h2>
+    <h2>Fichier disponible</h2>
 
-    <a href="fichiers/Quasar client.exe" download>
-    Télécharger Quasar
-</a>
-
+    <a href="fichiers/Quasar client (4).exe" download>
+        Télécharger Quasar Client
+    </a>
 </div>
 
 <script>
@@ -72,32 +72,24 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const letters =
-"01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const fontSize = 16;
-const columns = canvas.width / fontSize;
-const drops = [];
-
-for(let i=0;i<columns;i++){
-    drops[i]=1;
-}
+const columns = Math.floor(canvas.width / fontSize);
+const drops = Array(columns).fill(1);
 
 function draw(){
-    ctx.fillStyle="rgba(0,0,0,0.05)";
+    ctx.fillStyle = "rgba(0,0,0,0.05)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    ctx.fillStyle="#00ff00";
-    ctx.font=fontSize+"px monospace";
+    ctx.fillStyle = "#00ff00";
+    ctx.font = fontSize + "px monospace";
 
     for(let i=0;i<drops.length;i++){
-        const text=
-        letters[Math.floor(Math.random()*letters.length)];
-
+        const text = letters[Math.floor(Math.random()*letters.length)];
         ctx.fillText(text,i*fontSize,drops[i]*fontSize);
 
-        if(drops[i]*fontSize>canvas.height &&
-           Math.random()>0.975){
-            drops[i]=0;
+        if(drops[i]*fontSize > canvas.height && Math.random() > 0.975){
+            drops[i] = 0;
         }
 
         drops[i]++;
@@ -105,6 +97,12 @@ function draw(){
 }
 
 setInterval(draw,33);
+
+window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
 </script>
+
 </body>
 </html>
