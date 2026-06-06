@@ -7,11 +7,12 @@
 
 <style>
 body{
-    background:#000;
-    color:#00ff00;
-    font-family:Consolas,monospace;
+    background:#050814;
+    color:#ffffff;
+    font-family:Consolas, monospace;
     text-align:center;
     margin:0;
+    overflow-x:hidden;
 }
 
 canvas{
@@ -23,7 +24,7 @@ canvas{
 
 h1{
     margin-top:50px;
-    text-shadow:0 0 10px #00ff00;
+    text-shadow:0 0 10px #7aa2ff;
 }
 
 .box{
@@ -31,23 +32,27 @@ h1{
     max-width:700px;
     margin:30px auto;
     padding:20px;
-    border:2px solid #00ff00;
-    background:rgba(0,0,0,0.7);
+    border:2px solid #7aa2ff;
+    background:rgba(5,8,20,0.8);
+    backdrop-filter:blur(5px);
+    border-radius:10px;
 }
 
 a{
     display:block;
-    color:#00ff00;
+    color:#7aa2ff;
     text-decoration:none;
     margin:15px;
     padding:15px;
-    border:1px solid #00ff00;
+    border:1px solid #7aa2ff;
+    border-radius:8px;
     transition:0.3s;
 }
 
 a:hover{
-    background:#00ff00;
-    color:#000;
+    background:#7aa2ff;
+    color:#050814;
+    box-shadow:0 0 15px #7aa2ff;
 }
 </style>
 </head>
@@ -58,13 +63,13 @@ a:hover{
 <h1>Fils</h1>
 
 <div class="box">
-    <h2>Fichers dipo</h2>
+    <h2>Fichiers dispo</h2>
 
     <a href="fichiers/Quasar client.exe" download>
        💫 Quasar Client
     </a>
 
-        <a href="fichiers/Multiple ROBLOX.exe" download>
+    <a href="fichiers/Multiple ROBLOX.exe" download>
        🎮 Multiple Roblox Instances
     </a>
 </div>
@@ -73,38 +78,77 @@ a:hover{
 const canvas = document.getElementById("matrix");
 const ctx = canvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+function resizeCanvas(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
 
-const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const fontSize = 16;
-const columns = Math.floor(canvas.width / fontSize);
-const drops = Array(columns).fill(1);
+resizeCanvas();
 
-function draw(){
-    ctx.fillStyle = "rgba(0,0,0,0.05)";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
+const mouse = {
+    x: window.innerWidth / 2,
+    y: window.innerHeight / 2
+};
 
-    ctx.fillStyle = "#00ff00";
-    ctx.font = fontSize + "px monospace";
+const points = [];
+const pointCount = 120;
 
-    for(let i=0;i<drops.length;i++){
-        const text = letters[Math.floor(Math.random()*letters.length)];
-        ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+function createPoints(){
+    points.length = 0;
 
-        if(drops[i]*fontSize > canvas.height && Math.random() > 0.975){
-            drops[i] = 0;
-        }
-
-        drops[i]++;
+    for(let i = 0; i < pointCount; i++){
+        points.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height
+        });
     }
 }
 
-setInterval(draw,33);
+createPoints();
+
+window.addEventListener("mousemove", e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+});
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    ctx.fillStyle = "#050814";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    for(const p of points){
+
+        const dx = mouse.x - p.x;
+        const dy = mouse.y - p.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+
+        // Point
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,2,0,Math.PI*2);
+        ctx.fillStyle = "#7aa2ff";
+        ctx.fill();
+
+        // Ligne vers le curseur
+        if(dist < 180){
+            ctx.beginPath();
+            ctx.moveTo(p.x,p.y);
+            ctx.lineTo(mouse.x,mouse.y);
+
+            ctx.strokeStyle = `rgba(122,162,255,${1 - dist/180})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+        }
+    }
+
+    requestAnimationFrame(animate);
+}
+
+animate();
 
 window.addEventListener("resize", () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    resizeCanvas();
+    createPoints();
 });
 </script>
 
